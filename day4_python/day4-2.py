@@ -1,0 +1,67 @@
+FILENAME = "input4.txt"
+count = 0
+
+def hasEnoughAdjacent(lines, i, j):
+  dir_i = [0,0,1,-1,1,1,-1,-1]
+  dir_j = [1,-1,0,0,1,-1,1,-1]
+  m = len(lines)
+  n = len(lines[0])
+  count = 0
+  for k in range(8):
+    final_dir_i = dir_i[k] + i
+    final_dir_j = dir_j[k] + j
+    if (final_dir_i < 0 or final_dir_j < 0 or final_dir_i >=m or final_dir_j >=n):
+      continue
+    if lines[final_dir_i][final_dir_j] == '@':
+      count += 1
+
+  return count<4 
+
+def removeAccessible(lines, i, j):
+  count = 0
+  
+  if hasEnoughAdjacent(lines, i, j):
+    lines[i][j] = 'x'
+  
+  m = len(lines)
+  n = len(lines[0])
+  for k in range(m):
+    for l in range(n):
+      if lines[k][l] == 'x':
+        lines[k][l] = '.'
+        count += 1
+  print(f"Removed {count}")
+  return count 
+
+
+with open(FILENAME, 'r') as f:
+  str_lines = f.read().splitlines()
+  m = len(str_lines)
+  n = len(str_lines[0])
+  yes = True 
+  
+  lines = []
+  for i in range(m):
+    lines.append([])
+    for j in range(n):
+      lines[i].append(str_lines[i][j])
+
+  while yes:
+    removeCount = 0
+    removeList = []
+    for i in range(m):
+      for j in range(n):
+        if lines[i][j] == '@' and hasEnoughAdjacent(lines, i, j):
+          removeCount += 1
+          removeList.append((i,j))
+
+    for i in range(removeCount):
+      x,y = removeList[i]
+      lines[x][y] = '.'
+    print(f"Removed {removeCount}")
+    
+    yes = removeCount != 0
+
+    count += removeCount
+
+print(count)
